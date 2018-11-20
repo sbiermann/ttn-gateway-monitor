@@ -18,6 +18,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ems.ttngwmonitor.ttn.res.Gateway;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,11 +39,11 @@ public class TTNAdapter
 		mapper = new ObjectMapper();
 	}
 
-	public List<String> listOfGateways()
+	public List<Gateway> listOfGateways()
 	{
 		ResteasyClient client = null;
 		Response response = null;
-		List<String> gatewayIds = new ArrayList();
+		List<Gateway> gatewayIds = new ArrayList();
 		try {
 			client = new ResteasyClientBuilder().build();
 			WebTarget couponTarget = client.target( TTN_GW_DATA_URL );
@@ -60,7 +61,8 @@ public class TTNAdapter
 			while(iterator.hasNext())
 			{
 				JsonNode jsonNode = iterator.next();
-				gatewayIds.add( jsonNode.get( "id" ).asText() );
+				Gateway gateway = mapper.treeToValue( jsonNode, Gateway.class );
+				gatewayIds.add( gateway );
 			}
 		}
 		catch( Exception e )

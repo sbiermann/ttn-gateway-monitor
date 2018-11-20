@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ems.ttngwmonitor.slack.SlackService;
 import com.ems.ttngwmonitor.ttn.TTNAdapter;
+import com.ems.ttngwmonitor.ttn.res.Gateway;
 
 
 @ApplicationScoped
@@ -31,14 +32,14 @@ public class MonitorService
 
 	public void checkForOfflineGateways()
 	{
-		List<String> idList = ttnAdapter.listOfGateways();
-		Map<String, Optional<Date>> lastSeenMap = idList.stream()
-				.collect( Collectors.toMap( Function.identity(), id -> ttnAdapter.lastSeenOfGateway( id ) ) );
+		List<Gateway> idList = ttnAdapter.listOfGateways();
+		Map<Gateway, Optional<Date>> lastSeenMap = idList.stream()
+				.collect( Collectors.toMap( Function.identity(), gateway -> ttnAdapter.lastSeenOfGateway( gateway.getId() ) ) );
 		lastSeenMap.keySet().stream().forEach( id -> lastSeenMap.get( id ).ifPresent( date -> checkDate(date, id) ) );
 	}
 
 
-	private void checkDate( Date date, String id )
+	private void checkDate( Date date, Gateway gateway )
 	{
 		Calendar now = Calendar.getInstance();
 		now.add( Calendar.MINUTE, -30 );
@@ -47,8 +48,8 @@ public class MonitorService
 		Date longTime = now.getTime();
 		if(date.before( shortTime ) && date.after( longTime ))
 		{
-			 logger.info("last seen of "+id+" is to old "+date);
-			 slackService.informChannelForGateway(id, date);
+			 logger.info("last seen of "+gateway.getId()+" is to old "+date);
+			 slackService.informChannelForGateway(gateway, date);
 		}
 	}
 }

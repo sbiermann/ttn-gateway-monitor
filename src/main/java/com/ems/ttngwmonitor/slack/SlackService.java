@@ -1,18 +1,22 @@
 package com.ems.ttngwmonitor.slack;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.glassfish.grizzly.http.server.util.SimpleDateFormats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ems.ttngwmonitor.ttn.res.Gateway;
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
@@ -46,24 +50,25 @@ public class SlackService
 	}
 
 
-	public void informChannelForGateway( String gatewayid, Date date )
+	public void informChannelForGateway( Gateway gateway, Date date )
 	{
 		try
 		{
-			if(map.containsKey( gatewayid ))
+			if(map.containsKey( gateway.getId() ))
 			{
-				Date lastMessageDate = map.get( gatewayid );
+				Date lastMessageDate = map.get( gateway.getId() );
 				Calendar now = Calendar.getInstance();
 				now.add( Calendar.DATE, -1 );
 				if(lastMessageDate.after( now.getTime() ))
 					return;
 			}
 			else
-				map.put( gatewayid, new Date() );
+				map.put( gateway.getId(), new Date() );
 			if( !session.isConnected() )
 				session.connect();
 			SlackChannel channel = session.findChannelByName( "gateways" ); //make sure bot is a member of the channel.
-			session.sendMessage( channel, "Gateway: " + gatewayid + " ist zu lange offline, letzte Meldung: " + date );
+			String message = String.format( "Gateway: %1$s (%2$s) ist zu lange offline, letzte online Meldung: %3$td.%3$tm.%3$ty %3$tT", gateway.getId(), gateway.getOwner(), date );
+			session.sendMessage( channel, message);
 		}
 		catch( IOException e )
 		{
