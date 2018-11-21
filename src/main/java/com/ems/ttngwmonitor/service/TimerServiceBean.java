@@ -23,7 +23,7 @@ public class TimerServiceBean
 	private MonitorService monitorService;
 
 
-	@Schedule( hour = "*", minute = "*/5", persistent = false )
+	//@Schedule( hour = "*", minute = "*/5", persistent = false )
 	public void checkOnlineGateways()
 	{
 		logger.info( "checking online gateways" );

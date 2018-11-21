@@ -9,6 +9,17 @@
     </h:head>
     <h:body>
         Tach! REST Tool Version: #{msg.version}
+                        <br/>
+        <h:form>
+        <h:commandLink id="facebook" name="facebook"  action="#{socialauth.login}"
+                       actionListener="#{socialLoginBean.updateId}">
+            <h:graphicImage value="/images/facebook_icon.png"/>
+        </h:commandLink>
+            <h:commandLink id="github" name="github"  action="#{socialauth.login}"
+                           actionListener="#{socialLoginBean.updateId}">
+                <h:graphicImage value="/images/facebook_icon.png"/>
+            </h:commandLink>
+        </h:form>
     </h:body>
 </html>
 
