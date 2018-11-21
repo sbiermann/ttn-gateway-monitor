@@ -62,8 +62,7 @@ public class SlackService
 				if(lastMessageDate.after( now.getTime() ))
 					return;
 			}
-			else
-				map.put( gateway.getId(), new Date() );
+			map.put( gateway.getId(), new Date() );
 			if( !session.isConnected() )
 				session.connect();
 			SlackChannel channel = session.findChannelByName( "gateways" ); //make sure bot is a member of the channel.
