@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.brickred.socialauth.AuthProvider;
 import org.brickred.socialauth.Contact;
+import org.brickred.socialauth.Permission;
 import org.brickred.socialauth.Profile;
 import org.brickred.socialauth.SocialAuthConfig;
 import org.brickred.socialauth.SocialAuthManager;
@@ -82,8 +83,10 @@ public class SocialAuth implements Serializable {
 		config = new SocialAuthConfig();
 		try {
 			config.load();
+			config.setSaveRawResponse( true );
 			manager = new SocialAuthManager();
 			manager.setSocialAuthConfig(config);
+			manager.setPermission( "facebook", Permission.AUTHENTICATE_ONLY );
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -144,8 +147,8 @@ public class SocialAuth implements Serializable {
 					.getApplication().getViewHandler().getActionURL(context,
 							viewUrl));
 		} else {
-			returnToUrl = new URL("http", request.getServerName(), request
-					.getServerPort(), context.getApplication().getViewHandler()
+			returnToUrl = new URL("https", request.getServerName(),  context
+					.getApplication().getViewHandler()
 					.getActionURL(context, viewUrl));
 
 		}

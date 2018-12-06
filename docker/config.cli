@@ -1,0 +1,4 @@
+/subsystem=mail/mail-session=MyMail:add(jndi-name="java:jboss/mail/ttngwSMTP")
+/subsystem=mail/mail-session=MyMail/server=smtp:add(outbound-socket-binding-ref=mail-smtp)
+
+data-source add --name=ttngatewayDS --driver-name=mysql --jndi-name=java:/jdbc/ttngateway --connection-url=jdbc:mysql://db:3306/ttngateway?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull --user-name=mysql --password=mysql --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000 --enabled=true

@@ -1,14 +1,123 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-	  xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>ttngwmonitor REST Tool</title>
-		<f:loadBundle basename="version" var="msg"/>
-    </h:head>
-    <h:body>
-       tada...
-    </h:body>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                template="WEB-INF/template/default.xhtml">
+    <ui:define name="head">
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{socialLoginBean.verify}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="py-5 text-center">
+            <h2>TTN Gateway Monitor</h2>
+            <p class="lead">Bitte Gateway IDs eintragen und Benachrichtigungsadresse angeben.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 column">
+                <h:form id="gatewaysform" class="form-horizontal">
+                    <h:dataTable  id="campaigntable"
+                                 value="#{registerBean.gatewayList}" var="gateways"
+                                 styleClass="table table-striped table-bordered table-hover">
+                        <h:column>
+                            <f:facet name="header">Gateway ID</f:facet>
+                            #{gateways.ttngatewayid}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Last seen</f:facet>
+                            <h:outputText value="#{gateways.lastseen}">
+                                <f:convertDateTime timeZone="Europe/Berlin" pattern="dd.MM.yyyy HH:mm:ss"/>
+                            </h:outputText>
+                        </h:column>
+
+                        <h:column id="action">
+                            <f:facet name="header">Aktion</f:facet>
+                                <p:commandLink id="deletelink" oncomplete="$('#myModal').modal('show');"
+                                               action="#{registerBean.settingGatewayToDelete(gateways.ttngatewayid)}"
+                                               style="margin-left: 5px;"
+                                               title="Kampagne löschen">
+                                    <i class="fas fa-trash-alt"></i>
+                                </p:commandLink>
+                        </h:column>
+                    </h:dataTable>
+                </h:form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 column">
+                <h:form id="gatewayadd" class="form-horizontal">
+                    <label for="gwid">Gateway ID</label>
+                    <div class="input-group">
+                        <input jsf:value="#{registerBean.gateway}" jsf:id="gwid"
+                               name="gwid" type="text" placeholder=""
+                               class="form-control "/>
+                        <div class="invalid-feedback" style="width: 100%;">
+                            Die Gateway ID wird benötigt.
+                        </div>
+                        <button jsfc="h:commandButton" action="#{registerBean.addGateway}"
+                                id="addBtn" style="margin-left: 10px;"
+                                name="saveBtn" value="Hinzufügen" class="btn btn-primary" />
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+        <div class="row">
+            <br/>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 column">
+                <h:form id="emailform" class="form-horizontal">
+                    <label for="email">Benachrichtigungs E-Mail</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">@</span>
+                        </div>
+                        <input jsf:value="#{registerBean.email}" jsf:id="email"
+                               name="email" type="email" placeholder="test@invali.invalid"
+                               class="form-control "/>
+                        <div class="invalid-feedback" style="width: 100%;">
+                            Deine E-Mailadresse wird benötigt
+                        </div>
+                        <button jsfc="h:commandButton" action="#{registerBean.saveEmail}"
+                                id="saveBtn" style="margin-left: 10px;"
+                                name="saveBtn" value="Speichern" class="btn btn-primary" />
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <h:form id="deleteform">
+            <div class="modal" id="myModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Löschen</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">X</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Soll der Gateway gelöscht werden?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Nein</button>
+                            <button id="confirmDeleteButton" jsfc="h:commandButton"
+                                    action="#{registerBean.deleteGateway}"
+                                    value="Ja"
+                                    class="btn btn-primary"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
 

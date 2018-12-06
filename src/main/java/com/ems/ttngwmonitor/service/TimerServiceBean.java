@@ -23,11 +23,19 @@ public class TimerServiceBean
 	private MonitorService monitorService;
 
 
-	//@Schedule( hour = "*", minute = "*/5", persistent = false )
+	@Schedule( hour = "*", minute = "*/5", persistent = false )
 	public void checkOnlineGateways()
 	{
 		logger.info( "checking online gateways" );
 		monitorService.checkForOfflineGateways();
+
+	}
+
+	@Schedule( hour = "*", minute = "*/5", persistent = false )
+	public void checkRegisteredOnlineGateways()
+	{
+		logger.info( "checking for registered online gateways" );
+		monitorService.checkForEachDBGateways();
 
 	}
 

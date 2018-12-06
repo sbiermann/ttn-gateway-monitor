@@ -101,10 +101,10 @@ public class TTNAdapter
 			logger.error("error while getting gateway status for "+id,e);
 		}
 		finally {
-			if( client!=null )
-				client.close();
 			if( response != null )
 				response.close();
+			if( client!=null )
+				client.close();
 		}
 		return Optional.empty();
 	}
