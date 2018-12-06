@@ -1,14 +1,42 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-	  xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>ttngwmonitor REST Tool</title>
-		<f:loadBundle basename="version" var="msg"/>
-    </h:head>
-    <h:body>
-        Tach! REST Tool Version: #{msg.version}
-    </h:body>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="WEB-INF/template/default.xhtml">
+    <ui:define name="head">
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="py-5 text-center">
+            <h2>TTN Gateway Monitor</h2>
+            <p class="lead">Bitte loggen Sie sich mit einen der folgenden Anbieter ein um Ihre(n) TTN-Gateway(s) zu registrieren.</p>
+        </div>
+        <h:form>
+            <div class="row">
+                <div class="col-md-8 order-md-1">
+                    <h4 class="mb-3">Login mit:</h4>
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <h:commandLink class="btn btn-primary btn-block" id="facebook" name="facebook" action="#{socialauth.login}"
+                                           actionListener="#{socialLoginBean.updateId}">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </h:commandLink>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <h:commandLink class="btn btn-primary btn-block" id="github" name="github" action="#{socialauth.login}"
+                                           actionListener="#{socialLoginBean.updateId}">
+                                <i class="fab fa-github"></i> GitHub
+                            </h:commandLink>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <h:commandLink class="btn btn-primary btn-block" id="twitter" name="twitter" action="#{socialauth.login}"
+                                           actionListener="#{socialLoginBean.updateId}">
+                                <i class="fab fa-twitter"></i> Twitter
+                            </h:commandLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
 

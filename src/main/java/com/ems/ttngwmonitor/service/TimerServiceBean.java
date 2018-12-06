@@ -31,4 +31,12 @@ public class TimerServiceBean
 
 	}
 
+	@Schedule( hour = "*", minute = "*/5", persistent = false )
+	public void checkRegisteredOnlineGateways()
+	{
+		logger.info( "checking for registered online gateways" );
+		monitorService.checkForEachDBGateways();
+
+	}
+
 }

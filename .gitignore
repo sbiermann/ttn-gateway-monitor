@@ -18,3 +18,4 @@ target
 phantomjsdriver.log
 application.properties
 *.war
+oauth_consumer.properties
