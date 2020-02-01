@@ -34,7 +34,7 @@ public class MonitorService
 	@EJB
 	private PersistenceService persistenceService;
 
-	private List<String> reportedAsNotSeen = new ArrayList();
+	private HashSet<String> reportedAsNotSeen = new HashSet<>();
 
 	public void checkForOfflineGateways()
 	{
