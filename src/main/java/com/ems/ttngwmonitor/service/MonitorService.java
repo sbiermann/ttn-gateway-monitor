@@ -1,10 +1,6 @@
 package com.ems.ttngwmonitor.service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,6 +34,8 @@ public class MonitorService
 	@EJB
 	private PersistenceService persistenceService;
 
+	private List<String> reportedAsNotSeen = new ArrayList();
+
 	public void checkForOfflineGateways()
 	{
 		List<Gateway> idList = ttnAdapter.listOfGateways();
@@ -58,6 +56,16 @@ public class MonitorService
 		{
 			 logger.info("last seen of "+gateway.getId()+" is to old "+date);
 			 slackService.informChannelForGateway(gateway, date);
+			 reportedAsNotSeen.add(gateway.getId());
+		}
+		else
+		{
+			if(reportedAsNotSeen.contains( gateway.getId() ) && date.after( shortTime ))
+			{
+				logger.info("it seems that "+gateway.getId()+" is back on online "+date);
+				reportedAsNotSeen.remove( gateway.getId() );
+				slackService.informChannelForReturningGateway( gateway, date );
+			}
 		}
 	}
 

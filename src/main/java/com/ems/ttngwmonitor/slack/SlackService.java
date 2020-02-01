@@ -65,7 +65,7 @@ public class SlackService
 			map.put( gateway.getId(), new Date() );
 			if( !session.isConnected() )
 				session.connect();
-			SlackChannel channel = session.findChannelByName( "gateways" ); //make sure bot is a member of the channel.
+			SlackChannel channel = session.findChannelByName( "gatewaymonitoring" ); //make sure bot is a member of the channel.
 			String message = String.format( "Gateway: %1$s (%2$s) ist zu lange offline, letzte online Meldung: %3$td.%3$tm.%3$ty %3$tT", gateway.getId(), gateway.getOwner(), date );
 			session.sendMessage( channel, message);
 		}
@@ -74,5 +74,20 @@ public class SlackService
 			logger.error( "error while connecting to slack" );
 		}
 
+	}
+
+	public void informChannelForReturningGateway(Gateway gateway, Date date) {
+		try
+		{
+			if( !session.isConnected() )
+				session.connect();
+			SlackChannel channel = session.findChannelByName( "gatewaymonitoring" ); //make sure bot is a member of the channel.
+			String message = String.format( "Gateway: %1$s (%2$s) ist wieder seid %3$td.%3$tm.%3$ty %3$tT online", gateway.getId(), gateway.getOwner(), date );
+			session.sendMessage( channel, message);
+		}
+		catch( IOException e )
+		{
+			logger.error( "error while connecting to slack" );
+		}
 	}
 }
