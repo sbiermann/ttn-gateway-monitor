@@ -31,7 +31,7 @@ public class TimerServiceBean
 
 	}
 
-	@Schedule( hour = "*", minute = "*/5", persistent = false )
+	@Schedule( hour = "*", minute = "*/5", second = "30", persistent = false )
 	public void checkRegisteredOnlineGateways()
 	{
 		logger.info( "checking for registered online gateways" );

@@ -7,14 +7,19 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +49,10 @@ public class TTNAdapter
 		ResteasyClient client = null;
 		Response response = null;
 		List<Gateway> gatewayIds = new ArrayList();
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(httpClient);
 		try {
-			client = new ResteasyClientBuilder().build();
+			client = createRestEasyClient(engine);
 			WebTarget couponTarget = client.target( TTN_GW_DATA_URL );
 			response = couponTarget.path( "location")
 					.queryParam( "latitude", "47.99606771946258" )
@@ -74,6 +81,7 @@ public class TTNAdapter
 				client.close();
 			if( response != null )
 				response.close();
+			engine.close();
 		}
 		return gatewayIds;
 	}
@@ -83,8 +91,10 @@ public class TTNAdapter
 	{
 		ResteasyClient client = null;
 		Response response = null;
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(httpClient);
 		try {
-			client = new ResteasyClientBuilder().build();
+			client = createRestEasyClient(engine);
 			WebTarget couponTarget = client.target( TTN_GW_URL );
 			response = couponTarget.path( id )
 					.request()
@@ -105,7 +115,18 @@ public class TTNAdapter
 				response.close();
 			if( client!=null )
 				client.close();
+			engine.close();
 		}
 		return Optional.empty();
+	}
+
+	private ResteasyClient createRestEasyClient(ApacheHttpClient4Engine engine) {
+		return new ResteasyClientBuilder()
+				.connectionCheckoutTimeout(30, TimeUnit.SECONDS)
+				.connectionTTL(2, TimeUnit.MINUTES)
+				.establishConnectionTimeout(30, TimeUnit.SECONDS)
+				.socketTimeout(30, TimeUnit.SECONDS)
+				.httpEngine(engine)
+				.build();
 	}
 }
