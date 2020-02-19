@@ -1,21 +1,9 @@
 package com.ems.ttngwmonitor.ttn;
 
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-
+import com.ems.ttngwmonitor.ttn.res.Gateway;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -23,9 +11,13 @@ import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ems.ttngwmonitor.ttn.res.Gateway;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
 public class TTNAdapter
