@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -38,7 +39,11 @@ public class SlackService
 	@PostConstruct
 	public void postConstruct()
 	{
-		session = SlackSessionFactory.createWebSocketSlackSession( slackToken );
+		session = SlackSessionFactory
+				.getSlackSessionBuilder( slackToken )
+				.withAutoreconnectOnDisconnection(true)
+				.withConnectionHeartbeat(10, TimeUnit.SECONDS)
+				.build();
 		try
 		{
 			session.connect();
